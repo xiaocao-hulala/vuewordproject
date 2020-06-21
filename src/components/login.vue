@@ -58,16 +58,17 @@
 				var that = this;
 				//发送异步请求
 				// axios.get("/api/login", {
-				axios.get(" http://localhost:8081/admin/login", {
+				axios.get(" http://localhost:8081/user/login", {
 					/* name: this.name,
 					password: this.password */
 					params: {
-						name: this.name,
+						username: this.name,
 						password: this.password
 					}
 				}).then(function(result) {
-					console.log(result.data.statecode);
-					if (result.data.statecode == 200) {
+					console.log(result);
+					console.log(result.data.stateCode);
+					if (result.data.stateCode == 200) {
 						//sessionstorage:可以在当前浏览器范围内保存信息，当浏览器关闭时失效
 						//localStorage:与cookie类似可以保存更久
 						sessionStorage.setItem("loginuser", result.data.data.name);
@@ -80,6 +81,8 @@
 		}
 	}
 </script>
+
+
 
 <style>
 	#login {
