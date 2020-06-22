@@ -37,7 +37,8 @@
 				</div>
 			</div>
 
-			<button class="btn btn-primary" @click="login"  type="submit">登陆</button>
+			<button class="btn btn-primary" @click="login" type="submit" style="margin-left: -25px; width: 100px;">登陆</button>
+			<button class="btn btn-primary"  style="margin-left: 70px;" type="submit" @click="adduser">用户注册</button>
 		</div>
 	</div>
 </template>
@@ -66,17 +67,19 @@
 						password: this.password
 					}
 				}).then(function(result) {
-					console.log(result);
-					console.log(result.data.stateCode);
 					if (result.data.stateCode == 200) {
 						//sessionstorage:可以在当前浏览器范围内保存信息，当浏览器关闭时失效
 						//localStorage:与cookie类似可以保存更久
-						sessionStorage.setItem("loginuser", result.data.data.name);
+						sessionStorage.setItem("userid", result.data.data.id);
 						that.$router.push("/main")
 					} else {
 						alert('密码或者用户名错误');
 					}
 				});
+			},
+			adduser: function() {
+				var that = this;
+				that.$router.push("/adduser");
 			}
 		}
 	}

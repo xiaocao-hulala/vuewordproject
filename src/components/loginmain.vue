@@ -23,36 +23,32 @@
 					<div class="modal-content">
 						<div class="modal-body">
 							<button type="button" class="btn btn-primary btn-lg btn-block" @click="alterpassword" data-dismiss="modal">修改密码</button>
-							<button  type="button" @click="tuichu" class="btn btn-primary btn-lg btn-block" data-dismiss="modal">安全退出</button>
+							<button type="button" @click="tuichu" class="btn btn-primary btn-lg btn-block" data-dismiss="modal">安全退出</button>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary"  data-dismiss="modal">返回</button>
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">返回</button>
 						</div>
 					</div>
 				</div>
 			</div>
-
 		</div>
+
+
 
 
 		<!-- 单词列表-->
 		<div class="content">
-			<li>
-				<span class="word">beautiful</span>
-				<span class="fayin">发音</span>
-				<span class="caozuo"><button type="button" class="btn btn-outline-primary">删除</button>
-					<button type="button" class="btn btn-outline-primary">修改</button></span>
+			<li v-for="(v,index) in showvalue">
+				<span class="word">{{v.wordname}}</span>
+				<span class="fayin">{{v.wordtype}}</span>
+				<span class="desc">{{v.description}}</span>
+				<span class="caozuo"><button type="button" class="btn btn-outline-primary" @click="deleteword(v.id,index)">删除</button>
+					<button type="button" class="btn btn-outline-primary" @click="alterword(v.id)">修改</button>
+				</span>
 			</li>
-
-
-			<li>
-				<span class="word">beautiful</span>
-				<span class="fayin">发音</span>
-				<span class="caozuo"><button type="button" class="btn btn-outline-primary">删除</button>
-					<button type="button" class="btn btn-outline-primary">修改</button></span>
-			</li>
-
 		</div>
+
+
 
 	</div>
 
@@ -65,7 +61,8 @@
 	export default {
 		data: function() {
 			return {
-
+				id: sessionStorage.getItem("userid"),
+				showvalue: []
 			}
 		},
 		methods: {
@@ -77,10 +74,39 @@
 				var that = this;
 				that.$router.push("/")
 			},
-			alterpassword:function(){
+			alterpassword: function() {
 				var that = this;
 				that.$router.push("/alterpassword");
+			},
+			deleteword: function(id, index) {
+				var that = this;
+				axios.get("http://localhost:8081/word/delete", {
+					params: {
+						id: id
+					}
+				}).then(function(result) {
+					if (result.data.stateCode == 200) {
+						alert('删除成功!!!');
+						that.showvalue.splice(index, 1)
+					}
+				})
+			},
+			alterword: function(id) {
+				var that = this;
+				sessionStorage.setItem("alteruserid", id);
+				that.$router.push("/alterword")
 			}
+		},
+		mounted() {
+			var that = this;
+			axios.get("http://localhost:8081/word/list", {
+				params: {
+					id: this.id
+				}
+			}).then(function(result) {
+				console.log(result);
+				that.showvalue = result.data.data;
+			})
 		}
 	}
 </script>
@@ -110,6 +136,12 @@
 	#main .content {
 		margin: 0px auto;
 		width: 600px;
+	}
+
+	#main .desc {
+		float: left;
+		margin-left: 40px;
+		line-height: 2.5rem;
 	}
 
 	#main .content li {
